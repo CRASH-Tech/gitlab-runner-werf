@@ -1,0 +1,15 @@
+#!/bin/bash
+
+### Get env vars from kubernetes secret
+data=`kubectl get secret ci-deploy-secret -o json | jq -r '.data | to_entries | map(.key + "=" + (.value | @base64d)) | .[]'`
+
+### Set env vars from kubernetes secret
+for row in $(echo "${data}"); do
+  export $row
+done
+
+### Set env vars for werf
+REGEX='^https?:\/\/[a-zA-Z0-9.]+(.+)\.git$'
+[[ $CI_PROJECT_URL.git =~ ${REGEX} ]]
+export WERF_REPO=${REGISTRY}/cache
+export WERF_FINAL_REPO=${REGISTRY}${BASH_REMATCH[1]}
