@@ -1,4 +1,4 @@
-FROM gitlab/gitlab-runner:ubuntu-v17.8.3
+FROM ubuntu:22.04
 USER root
 RUN apt-get update; apt-get install -y curl wget bash jq fuse-overlayfs
 COPY bin/* /usr/local/bin/
